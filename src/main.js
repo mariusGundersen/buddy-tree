@@ -47,7 +47,7 @@ export function deallocate(tree, address){
   if(address < tree.size/2){
     left = deallocate(tree.left, address);
   }else{
-    right = deallocate(tree.right, address);
+    right = deallocate(tree.right, address - tree.size/2);
   }
 
   if(left === null && right === null){

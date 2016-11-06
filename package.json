@@ -1,0 +1,46 @@
+{
+  "name": "buddy-tree",
+  "version": "0.0.1",
+  "description": "Immutable buddy memory allocation",
+  "main": "lib/main.js",
+  "scripts": {
+    "test": "ava",
+    "compile": "babel -d lib src",
+    "prepublish": "npm test && npm run compile"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mariusGundersen/buddy-tree.git"
+  },
+  "keywords": [
+    "immutable",
+    "memory",
+    "buddy"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mariusGundersen/buddy-tree/issues"
+  },
+  "homepage": "https://github.com/mariusGundersen/buddy-tree#readme",
+  "devDependencies": {
+    "ava": "^0.16.0",
+    "babel-cli": "^6.16.0",
+    "babel-plugin-transform-object-rest-spread": "^6.16.0",
+    "babel-preset-es2015-node": "^6.1.1",
+    "babel-preset-es2016": "^6.16.0",
+    "babel-register": "^6.16.3"
+  },
+  "ava": {
+    "files": [
+      "test/*.js"
+    ],
+    "source": [
+      "src/*.js"
+    ],
+    "require": [
+      "babel-register"
+    ],
+    "babel": "inherit"
+  }
+}

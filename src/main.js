@@ -12,19 +12,19 @@ export function allocate(tree, size=1){
       return [{
         ...tree,
         used: true
-      }, tree.address];
+      }, ...range(tree.address, size)];
     }else{
       return [tree, -1];
     }
   }
 
-  let address = -1;
+  let addresses = [-1];
   let left = tree.left;
   let right = tree.right;
 
-  [left, address] = allocate(left || createNode(tree.size/2, tree.address), size);
-  if(address === -1){
-    [right, address] = allocate(right || createNode(tree.size/2, tree.address + tree.size/2), size);
+  [left, ...addresses] = allocate(left || createNode(tree.size/2, tree.address), size);
+  if(addresses[0] === -1){
+    [right, ...addresses] = allocate(right || createNode(tree.size/2, tree.address + tree.size/2), size);
   }
 
   const used = left && left.used && right && right.used ? true : false;
@@ -34,7 +34,7 @@ export function allocate(tree, size=1){
     used,
     left,
     right
-  }, address];
+  }, ...addresses];
 }
 
 export function deallocate(tree, address){
@@ -85,4 +85,10 @@ export function createFromLevel(level, address=0){
 
 export function log2(x){
   return Math.ceil(Math.log(x)/Math.LN2);
+}
+
+export function* range(from, size){
+  for(let x=from; x<from+size; x++){
+    yield x;
+  }
 }

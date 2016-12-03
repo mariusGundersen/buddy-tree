@@ -31,6 +31,26 @@ test('when allocating half the memory', t => {
   t.true(result.left.used);
 });
 
+test('when allocating one slots', t => {
+  const tree = buddy.createTree(16);
+  const [result, ...addresses] = buddy.allocate(tree);
+  t.deepEqual(addresses, [0]);
+});
+
+test('when allocating three slots', t => {
+  const tree = buddy.createTree(16);
+  const [result, ...addresses] = buddy.allocate(tree, 3);
+  t.deepEqual(addresses, [0, 1, 2]);
+});
+
+test('when allocating three and three slots', t => {
+  const tree = buddy.createTree(16);
+  const [tree1, ...addresses1] = buddy.allocate(tree, 3);
+  const [result, ...addresses2] = buddy.allocate(tree1, 3);
+  t.deepEqual(addresses1, [0, 1, 2]);
+  t.deepEqual(addresses2, [4, 5, 6]);
+});
+
 test('when allocating half the memory twice', t => {
   const tree = buddy.createTree(16);
   const [tree1, address1] = buddy.allocate(tree, tree.size/2);
@@ -152,7 +172,7 @@ test('when allocating half the memory twice, then deallocating both halves of th
   t.is(result, null);
 });
 
-test.only('when allocating, deallocating and allocating 1 block', t => {
+test('when allocating, deallocating and allocating 1 block', t => {
   const tree = buddy.createTree(4);
   const [tree1, _] = buddy.allocate(tree, 2);
   const [tree2, address1] = buddy.allocate(tree1);

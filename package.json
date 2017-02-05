@@ -3,10 +3,13 @@
   "version": "1.1.0",
   "description": "Immutable buddy memory allocation",
   "main": "lib/main.js",
+  "types": "lib/main.d.ts",
   "scripts": {
+    "clean": "rm -rf ./lib",
     "test": "ava",
-    "compile": "babel -d lib src",
-    "prepublish": "npm test && npm run compile"
+    "compile": "tsc",
+    "watch": "tsc -w & ava -w",
+    "prepublish": "npm run clean && npm run compile && npm test"
   },
   "repository": {
     "type": "git",
@@ -25,22 +28,14 @@
   "homepage": "https://github.com/mariusGundersen/buddy-tree#readme",
   "devDependencies": {
     "ava": "^0.16.0",
-    "babel-cli": "^6.16.0",
-    "babel-plugin-transform-object-rest-spread": "^6.16.0",
-    "babel-preset-es2015-node": "^6.1.1",
-    "babel-preset-es2016": "^6.16.0",
-    "babel-register": "^6.16.3"
+    "typescript": "^2.1.5"
   },
   "ava": {
     "files": [
       "test/*.js"
     ],
     "source": [
-      "src/*.js"
-    ],
-    "require": [
-      "babel-register"
-    ],
-    "babel": "inherit"
+      "src/*.ts"
+    ]
   }
 }

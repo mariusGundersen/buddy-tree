@@ -83,7 +83,12 @@ export function allocate(tree : Node, size=1) : Allocation{
   };
 }
 
-export function deallocate(tree : Node | null, address : number) : Node | null{
+
+export function deallocate(tree : Node, address : number) : Node {
+  return deallocateUnsafe(tree, address) || createNode(tree.size);
+}
+
+export function deallocateUnsafe(tree : Node, address : number) : Node | null{
   if(tree === null){
     return null;
   }
@@ -91,9 +96,9 @@ export function deallocate(tree : Node | null, address : number) : Node | null{
   let left = tree.left;
   let right = tree.right;
   if(address < tree.size/2){
-    left = deallocate(tree.left, address);
+    left = tree.left && deallocateUnsafe(tree.left, address);
   }else{
-    right = deallocate(tree.right, address - tree.size/2);
+    right = tree.right && deallocateUnsafe(tree.right, address - tree.size/2);
   }
 
   if(left === null && right === null){

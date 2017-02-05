@@ -106,15 +106,27 @@ test('when deallocating the full memory', t => {
     ...buddy.createTree(16),
     used: true
   };
-  const result = buddy.deallocate(tree, tree.address);
+  const result = buddy.deallocateUnsafe(tree, tree.address);
   t.not(tree, result);
   t.is(result, null);
+});
+
+
+test('when safely deallocating the full memory', t => {
+  const tree = {
+    ...buddy.createTree(16),
+    used: true
+  };
+  const result = buddy.deallocate(tree, tree.address);
+  t.not(tree, result);
+  t.not(result, null);
+  t.deepEqual(result, buddy.createTree(16));
 });
 
 test('when allocating then deallocating half the memory', t => {
   const tree = buddy.createTree(16);
   const {tree: tree1, address} = buddy.allocate(tree, tree.size/2);
-  const result = buddy.deallocate(tree1, address);
+  const result = buddy.deallocateUnsafe(tree1, address);
   t.not(tree, tree1);
   t.not(tree1, result);
   t.is(result, null);
@@ -124,7 +136,7 @@ test('when allocating half the memory twice, then deallocating the first half of
   const tree = buddy.createTree(16);
   const {tree: tree1, address: address1} = buddy.allocate(tree, tree.size/2);
   const {tree: tree2, address: address2} = buddy.allocate(tree1, tree.size/2);
-  const result = buddy.deallocate(tree2, address1);
+  const result = buddy.deallocateUnsafe(tree2, address1);
   t.not(tree, tree1);
   t.not(tree1, tree2);
   t.not(tree2, result);
@@ -138,7 +150,7 @@ test('when allocating half the memory twice, then deallocating the second half o
   const tree = buddy.createTree(16);
   const {tree: tree1, address: address1} = buddy.allocate(tree, tree.size/2);
   const {tree: tree2, address: address2} = buddy.allocate(tree1, tree.size/2);
-  const result = buddy.deallocate(tree2, address2);
+  const result = buddy.deallocateUnsafe(tree2, address2);
   t.not(tree, tree1);
   t.not(tree1, tree2);
   t.not(tree2, result);
@@ -152,8 +164,8 @@ test('when allocating half the memory twice, then deallocating both halves of th
   const tree = buddy.createTree(16);
   const {tree: tree1, address: address1} = buddy.allocate(tree, tree.size/2);
   const {tree: tree2, address: address2} = buddy.allocate(tree1, tree.size/2);
-  const tree3 = buddy.deallocate(tree2, address1);
-  const result = buddy.deallocate(tree3, address2);
+  const tree3 = buddy.deallocateUnsafe(tree2, address1);
+  const result = buddy.deallocateUnsafe(tree3, address2);
   t.not(tree, tree1);
   t.not(tree1, tree2);
   t.not(tree2, tree3);
@@ -165,8 +177,8 @@ test('when allocating half the memory twice, then deallocating both halves of th
   const tree = buddy.createTree(16);
   const {tree: tree1, address: address1} = buddy.allocate(tree, tree.size/2);
   const {tree: tree2, address: address2} = buddy.allocate(tree1, tree.size/2);
-  const tree3 = buddy.deallocate(tree2, address2);
-  const result = buddy.deallocate(tree3, address1);
+  const tree3 = buddy.deallocateUnsafe(tree2, address2);
+  const result = buddy.deallocateUnsafe(tree3, address1);
   t.not(tree, tree1);
   t.not(tree1, tree2);
   t.not(tree2, tree3);
@@ -178,7 +190,7 @@ test('when allocating, deallocating and allocating 1 block', t => {
   const tree = buddy.createTree(4);
   const {tree: tree1} = buddy.allocate(tree, 2);
   const {tree: tree2, address: address1} = buddy.allocate(tree1);
-  const tree3 = buddy.deallocate(tree2, address1);
+  const tree3 = buddy.deallocateUnsafe(tree2, address1);
   const {tree: result, address: address2} = buddy.allocate(tree3);
   t.not(tree, tree1);
   t.not(tree1, tree2);

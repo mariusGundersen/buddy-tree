@@ -33,22 +33,30 @@ test('when allocating half the memory', t => {
 
 test('when allocating one slots', t => {
   const tree = buddy.createTree(16);
-  const {tree: result, addresses} = buddy.allocate(tree);
-  t.deepEqual([...addresses], [0]);
+  const {tree: result, address, size, count} = buddy.allocate(tree);
+  t.is(address, 0);
+  t.is(size, 1);
+  t.is(count, 1);
 });
 
 test('when allocating three slots', t => {
   const tree = buddy.createTree(16);
-  const {tree: result, addresses} = buddy.allocate(tree, 3);
-  t.deepEqual([...addresses], [0, 1, 2]);
+  const {tree: result, address, size, count} = buddy.allocate(tree, 3);
+  t.is(address, 0);
+  t.is(size, 4);
+  t.is(count, 3);
 });
 
 test('when allocating three and three slots', t => {
   const tree = buddy.createTree(16);
-  const {tree: tree1, addresses: addresses1} = buddy.allocate(tree, 3);
-  const {tree: result, addresses: addresses2} = buddy.allocate(tree1, 3);
-  t.deepEqual([...addresses1], [0, 1, 2]);
-  t.deepEqual([...addresses2], [4, 5, 6]);
+  const {tree: tree1, address: address1, size: size1, count: count1} = buddy.allocate(tree, 3);
+  const {tree: result, address: address2, size: size2, count: count2} = buddy.allocate(tree1, 3);
+  t.is(address1, 0);
+  t.is(size1, 4);
+  t.is(count1, 3);
+  t.is(address2, 4);
+  t.is(size2, 4);
+  t.is(count2, 3);
 });
 
 test('when allocating half the memory twice', t => {
@@ -198,3 +206,12 @@ test('when allocating, deallocating and allocating 1 block', t => {
   t.not(tree3, result);
   t.is(address1, address2);
 });
+
+test('range of addresses', t => {
+  const tree = buddy.createTree(8);
+  const {tree: tree1} = buddy.allocate(tree, 2);
+  const {tree: tree2, ...allocation} = buddy.allocate(tree1, 3);
+
+  const addresses = [...buddy.range(allocation)];
+  t.deepEqual(addresses, [4, 5, 6]);
+})

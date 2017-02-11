@@ -10,8 +10,8 @@ export interface Node {
 export interface Allocation {
   readonly tree : Node,
   readonly address : number,
-  readonly size : number,
-  readonly addresses : IterableIterator<number>
+  readonly count : number,
+  readonly size : number
 }
 
 export function allocate(tree : Node, size=1) : Allocation{
@@ -19,8 +19,8 @@ export function allocate(tree : Node, size=1) : Allocation{
     return {
       tree,
       address: -1,
-      size: 0,
-      addresses: range(0, 0)
+      count: 0,
+      size: 0
     };
   }
 
@@ -32,28 +32,28 @@ export function allocate(tree : Node, size=1) : Allocation{
           used: true
         },
         address: tree.address,
-        size: tree.size,
-        addresses: range(tree.address, size)
+        count: size,
+        size: tree.size
       };
     }else{
       return {
         tree,
         address: -1,
-        size: 0,
-        addresses: range(0, 0)
+        count: 0,
+        size: 0
       };
     }
   }
 
-  const {tree: left, address, size: allocatedSize, addresses} = allocate(tree.left || createNode(tree.size/2, tree.address), size);
+  const {tree: left, address, size: allocatedSize, count} = allocate(tree.left || createNode(tree.size/2, tree.address), size);
   if(left === tree.left){
-    const {tree: right, address, size: allocatedSize, addresses} = allocate(tree.right || createNode(tree.size/2, tree.address + tree.size/2), size);
+    const {tree: right, address, size: allocatedSize, count} = allocate(tree.right || createNode(tree.size/2, tree.address + tree.size/2), size);
     if(right === tree.right){
       return {
         tree,
         address: -1,
-        size: 0,
-        addresses: range(0, 0)
+        count: 0,
+        size: 0
       };
     }else{
       return {
@@ -64,8 +64,8 @@ export function allocate(tree : Node, size=1) : Allocation{
           right
         },
         address,
-        size,
-        addresses
+        count,
+        size: allocatedSize
       };
     }
   }
@@ -78,8 +78,8 @@ export function allocate(tree : Node, size=1) : Allocation{
       right: tree.right
     },
     address,
-    size,
-    addresses
+    count,
+    size: allocatedSize
   };
 }
 
@@ -138,8 +138,8 @@ export function log2(x : number){
   return Math.ceil(Math.log(x)/Math.LN2);
 }
 
-export function* range(from : number, size : number){
-  for(let x=from; x<from+size; x++){
+export function* range({address, count} : {address : number, count : number}){
+  for(let x=address; x<address+count; x++){
     yield x;
   }
 }

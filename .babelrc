@@ -1,9 +1,11 @@
 {
   "presets": [
-    "es2015-node",
-    "es2016"
+    ["es2015", {"spec": true}]
   ],
   "plugins":[
-    "transform-object-rest-spread"
+    ["transform-runtime", {
+      "polyfill": true,
+      "regenerator": true
+    }]
   ]
 }

@@ -4,6 +4,7 @@
   "description": "Immutable buddy memory allocation",
   "main": "dist/main.js",
   "types": "dist/main.d.ts",
+  "module": "lib/main.js",
   "scripts": {
     "clean": "rm -rf ./lib ./dist",
     "test": "ava",

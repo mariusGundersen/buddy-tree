@@ -41,6 +41,9 @@
     ],
     "source": [
       "lib/*.js"
+    ],
+    "require": [
+      "babel-register"
     ]
   },
   "peerDependencies": {

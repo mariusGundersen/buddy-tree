@@ -6,9 +6,10 @@
     "noImplicitAny": true,
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
-    "target": "es2017",
+    "target": "es2015",
     "module": "es2015",
-    "inlineSourceMap": true,
+    "sourceMap": true,
+    "inlineSourceMap": false,
     "inlineSources": true,
     "declaration": true
   },

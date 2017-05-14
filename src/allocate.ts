@@ -16,6 +16,7 @@ export default function allocate(tree : Node, size=1) : Allocation{
       return {
         tree : {
           ...tree,
+          usedSize: size,
           used: true
         },
         address: tree.address,
@@ -47,6 +48,7 @@ export default function allocate(tree : Node, size=1) : Allocation{
         tree: {
           ...tree,
           used: left.used && right.used,
+          usedSize: (left.usedSize||0) + (right.usedSize||0),
           left,
           right
         },
@@ -61,6 +63,7 @@ export default function allocate(tree : Node, size=1) : Allocation{
     tree: {
       ...tree,
       used: left.used && tree.right != null && tree.right.used,
+      usedSize: left.usedSize + (tree.right != null ? tree.right.usedSize || 0 : 0),
       left,
       right: tree.right
     },

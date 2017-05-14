@@ -7,6 +7,7 @@ test('when allocating the full memory', t => {
   t.is(address, 0);
   t.not(tree, result);
   t.true(result.used);
+  t.is(result.usedSize, 16);
 });
 
 test('when allocating the full memory twice', t => {
@@ -29,6 +30,8 @@ test('when allocating half the memory', t => {
   t.truthy(result.left);
   t.falsy(result.right);
   t.true(result.left.used);
+  t.is(result.usedSize, 8);
+  t.is(result.left.usedSize, 8);
 });
 
 test('when allocating one slots', t => {
@@ -37,6 +40,7 @@ test('when allocating one slots', t => {
   t.is(address, 0);
   t.is(size, 1);
   t.is(count, 1);
+  t.is(result.usedSize, 1);
 });
 
 test('when allocating three slots', t => {
@@ -45,6 +49,7 @@ test('when allocating three slots', t => {
   t.is(address, 0);
   t.is(size, 4);
   t.is(count, 3);
+  t.is(result.usedSize, 3);
 });
 
 test('when allocating three and three slots', t => {
@@ -57,6 +62,7 @@ test('when allocating three and three slots', t => {
   t.is(address2, 4);
   t.is(size2, 4);
   t.is(count2, 3);
+  t.is(result.usedSize, 6);
 });
 
 test('when allocating half the memory twice', t => {
@@ -97,6 +103,7 @@ test('when allocating a bit less than half the memory', t => {
   t.truthy(result.left);
   t.falsy(result.right);
   t.true(result.left.used);
+  t.is(result.usedSize, 7);
 });
 
 test('when allocating a bit more than half the memory', t => {
@@ -107,6 +114,7 @@ test('when allocating a bit more than half the memory', t => {
   t.true(result.used);
   t.falsy(result.left);
   t.falsy(result.right);
+  t.is(result.usedSize, 9);
 });
 
 test('when deallocating the full memory', t => {

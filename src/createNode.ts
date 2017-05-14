@@ -1,20 +1,14 @@
 import { Allocation, Node } from './types';
 
-export default function createNode(size : number, address=0){
-  return createFromLevel(log2(size), address);
-}
-
-export function createTree(size : number, address=0){
-  return createFromLevel(log2(size), address);
-}
-
-export function createFromLevel(level : number, address=0) : Node{
+export default function createNode(size : number, address=0) : Node{
+  const level = log2(size);
   return {
     used: false,
     left: null,
     right: null,
     level: level,
     size: 1<<level,
+    usedSize: 0,
     address: address
   };
 }

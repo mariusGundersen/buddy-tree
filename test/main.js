@@ -120,7 +120,8 @@ test('when allocating a bit more than half the memory', t => {
 test('when deallocating the full memory', t => {
   const tree = {
     ...buddy.createTree(16),
-    used: true
+    used: true,
+    usedSize: 16
   };
   const result = buddy.deallocateUnsafe(tree, tree.address);
   t.not(tree, result);
@@ -131,7 +132,8 @@ test('when deallocating the full memory', t => {
 test('when safely deallocating the full memory', t => {
   const tree = {
     ...buddy.createTree(16),
-    used: true
+    used: true,
+    usedSize: 16
   };
   const result = buddy.deallocate(tree, tree.address);
   t.not(tree, result);
@@ -160,6 +162,7 @@ test('when allocating half the memory twice, then deallocating the first half of
   t.falsy(result.left);
   t.truthy(result.right);
   t.true(result.right.used);
+  t.is(result.usedSize, tree.size/2);
 });
 
 test('when allocating half the memory twice, then deallocating the second half of the memory', t => {
@@ -174,6 +177,7 @@ test('when allocating half the memory twice, then deallocating the second half o
   t.truthy(result.left);
   t.falsy(result.right);
   t.true(result.left.used);
+  t.is(result.usedSize, tree.size/2);
 });
 
 test('when allocating half the memory twice, then deallocating both halves of the memory', t => {
@@ -213,6 +217,7 @@ test('when allocating, deallocating and allocating 1 block', t => {
   t.not(tree2, tree3);
   t.not(tree3, result);
   t.is(address1, address2);
+  t.is(result.usedSize, 3);
 });
 
 test('range of addresses', t => {

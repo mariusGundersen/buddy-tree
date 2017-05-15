@@ -23,9 +23,11 @@ export function deallocateUnsafe(tree : Node, address : number) : Node | null{
   }
 
   const used = left != null && left.used && right != null && right.used ? true : false;
+  const usedSize = (left != null ? left.usedSize||0 : 0) + (right != null ? right.usedSize||0 : 0);
 
   return {
     ...tree,
+    usedSize,
     used,
     left,
     right

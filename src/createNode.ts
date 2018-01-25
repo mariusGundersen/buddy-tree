@@ -1,9 +1,10 @@
 import { Allocation, Node } from './types';
 
-export default function createNode(size : number, address=0) : Node{
+export default function createNode(size : number, address=0) : Node {
   const level = log2(size);
   return {
     used: false,
+    maxBlock: size,
     left: null,
     right: null,
     level: level,

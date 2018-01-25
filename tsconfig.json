@@ -2,9 +2,7 @@
   "compilerOptions": {
     "outDir": "./lib",
     "allowJs": false,
-    "strictNullChecks": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
+    "strict": true,
     "noFallthroughCasesInSwitch": true,
     "target": "es2015",
     "module": "es2015",

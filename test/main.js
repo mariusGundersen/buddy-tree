@@ -30,6 +30,7 @@ test('when allocating half the memory', t => {
   t.truthy(result.left);
   t.falsy(result.right);
   t.true(result.left.used);
+  t.is(result.maxBlock, 8);
   t.is(result.usedSize, 8);
   t.is(result.left.usedSize, 8);
 });
@@ -41,6 +42,7 @@ test('when allocating one slots', t => {
   t.is(size, 1);
   t.is(count, 1);
   t.is(result.usedSize, 1);
+  t.is(result.maxBlock, 8);
 });
 
 test('when allocating three slots', t => {
@@ -50,6 +52,7 @@ test('when allocating three slots', t => {
   t.is(size, 4);
   t.is(count, 3);
   t.is(result.usedSize, 3);
+  t.is(result.maxBlock, 8);
 });
 
 test('when allocating three and three slots', t => {
@@ -63,6 +66,7 @@ test('when allocating three and three slots', t => {
   t.is(size2, 4);
   t.is(count2, 3);
   t.is(result.usedSize, 6);
+  t.is(result.maxBlock, 8);
 });
 
 test('when allocating half the memory twice', t => {
@@ -78,6 +82,7 @@ test('when allocating half the memory twice', t => {
   t.truthy(tree2.right);
   t.true(tree2.left.used);
   t.true(tree2.right.used);
+  t.is(tree2.maxBlock, 0);
 });
 
 test('when allocating half the memory then the full memory', t => {
@@ -104,6 +109,7 @@ test('when allocating a bit less than half the memory', t => {
   t.falsy(result.right);
   t.true(result.left.used);
   t.is(result.usedSize, 7);
+  t.is(result.maxBlock, 8);
 });
 
 test('when allocating a bit more than half the memory', t => {
@@ -115,6 +121,7 @@ test('when allocating a bit more than half the memory', t => {
   t.falsy(result.left);
   t.falsy(result.right);
   t.is(result.usedSize, 9);
+  t.is(result.maxBlock, 0);
 });
 
 test('when deallocating the full memory', t => {
@@ -139,6 +146,7 @@ test('when safely deallocating the full memory', t => {
   t.not(tree, result);
   t.not(result, null);
   t.deepEqual(result, buddy.createTree(16));
+  t.is(result.maxBlock, 16);
 });
 
 test('when allocating then deallocating half the memory', t => {
@@ -163,6 +171,7 @@ test('when allocating half the memory twice, then deallocating the first half of
   t.truthy(result.right);
   t.true(result.right.used);
   t.is(result.usedSize, tree.size/2);
+  t.is(result.maxBlock, 8);
 });
 
 test('when allocating half the memory twice, then deallocating the second half of the memory', t => {
@@ -178,6 +187,7 @@ test('when allocating half the memory twice, then deallocating the second half o
   t.falsy(result.right);
   t.true(result.left.used);
   t.is(result.usedSize, tree.size/2);
+  t.is(result.maxBlock, 8);
 });
 
 test('when allocating half the memory twice, then deallocating both halves of the memory', t => {
@@ -218,6 +228,7 @@ test('when allocating, deallocating and allocating 1 block', t => {
   t.not(tree3, result);
   t.is(address1, address2);
   t.is(result.usedSize, 3);
+  t.is(result.maxBlock, 1);
 });
 
 test('range of addresses', t => {
@@ -227,4 +238,46 @@ test('range of addresses', t => {
 
   const addresses = [...buddy.range(allocation)];
   t.deepEqual(addresses, [4, 5, 6]);
+});
+
+test('old node to new node', t => {
+  const tree = {
+    used: false,
+    left: {
+      used: false,
+      left: null,
+      right: {
+        used: false,
+        left: null,
+        right: {
+          used: true,
+          left: null,
+          right: null,
+          level: 0,
+          size: 1,
+          usedSize: 1,
+          address: 3
+        },
+        level: 1,
+        size: 2,
+        usedSize: 0,
+        address: 2
+      },
+      level: 2,
+      size: 4,
+      usedSize: 0,
+      address: 0
+    },
+    right: null,
+    level: 3,
+    size: 8,
+    usedSize: 0,
+    address: 0
+  }
+
+  const result = buddy.modernize(tree);
+
+  t.is(result.maxBlock, 4);
+  t.is(result.left.maxBlock, 2);
+  t.is(result.left.right.maxBlock, 1);
 })

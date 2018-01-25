@@ -1,8 +1,13 @@
-import { Allocation, Node } from './types';
+import { Allocation, Node, OldNode } from './types';
 import createNode from './createNode';
+import modernize from './modernize';
 
-export default function allocate(tree : Node, size=1) : Allocation{
-  if(tree.size < size || tree.used){
+export default function allocate(tree : Node | OldNode, size=1) : Allocation {
+  return unsafeAllocate(modernize(tree), size);
+}
+
+function unsafeAllocate(tree : Node, size=1) : Allocation {
+  if(size > tree.maxBlock){
     return {
       tree,
       address: -1,
@@ -17,6 +22,7 @@ export default function allocate(tree : Node, size=1) : Allocation{
         tree : {
           ...tree,
           usedSize: size,
+          maxBlock: 0,
           used: true
         },
         address: tree.address,
@@ -33,39 +39,30 @@ export default function allocate(tree : Node, size=1) : Allocation{
     }
   }
 
-  const {tree: left, address, size: allocatedSize, count} = allocate(tree.left || createNode(tree.size/2, tree.address), size);
-  if(left === tree.left){
-    const {tree: right, address, size: allocatedSize, count} = allocate(tree.right || createNode(tree.size/2, tree.address + tree.size/2), size);
-    if(right === tree.right){
-      return {
-        tree,
-        address: -1,
-        count: 0,
-        size: 0
-      };
-    }else{
-      return {
-        tree: {
-          ...tree,
-          used: left.used && right.used,
-          usedSize: (left.usedSize||0) + (right.usedSize||0),
-          left,
-          right
-        },
-        address,
-        count,
-        size: allocatedSize
-      };
-    }
+  if(!tree.left || tree.left.maxBlock > size){
+    const {tree: left, address, size: allocatedSize, count} = unsafeAllocate(tree.left || createNode(tree.size/2, tree.address), size);
+    return {
+      tree: {
+        ...tree,
+        used: left.used && tree.right != null && tree.right.used,
+        usedSize: left.usedSize + (tree.right != null ? tree.right.usedSize || 0 : 0),
+        maxBlock: Math.max(left.maxBlock, tree.right ? tree.right.maxBlock : tree.size/2),
+        left
+      },
+      address,
+      count,
+      size: allocatedSize
+    };
   }
 
+  const {tree: right, address, size: allocatedSize, count} = unsafeAllocate(tree.right || createNode(tree.size/2, tree.address + tree.size/2), size);
   return {
     tree: {
       ...tree,
-      used: left.used && tree.right != null && tree.right.used,
-      usedSize: left.usedSize + (tree.right != null ? tree.right.usedSize || 0 : 0),
-      left,
-      right: tree.right
+      used: tree.left.used && right.used,
+      usedSize: (tree.left.usedSize||0) + (right.usedSize||0),
+      maxBlock: Math.max(tree.left.maxBlock, right.maxBlock),
+      right
     },
     address,
     count,

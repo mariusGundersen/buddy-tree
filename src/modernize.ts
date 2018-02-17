@@ -10,7 +10,9 @@ export default function modernize(node : OldNode | Node) : Node {
     ...node,
     left,
     right,
-    maxBlock: left == null || right == null ? node.size/2 : Math.max(left.maxBlock, right.maxBlock)
+    maxBlock: left == null && right == null ? 0 :
+              left == null || right == null ? node.size/2 :
+              Math.max(left.maxBlock, right.maxBlock)
   }
 }
 

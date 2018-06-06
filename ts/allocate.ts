@@ -39,7 +39,7 @@ function unsafeAllocate(tree : Node, size=1) : Allocation {
     }
   }
 
-  if(!tree.left || tree.left.maxBlock > size){
+  if(!tree.left || tree.left.maxBlock >= size){
     const {tree: left, address, size: allocatedSize, count} = unsafeAllocate(tree.left || createNode(tree.size/2, tree.address), size);
     return {
       tree: {

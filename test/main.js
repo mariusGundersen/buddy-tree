@@ -280,4 +280,14 @@ test('old node to new node', t => {
   t.is(result.maxBlock, 4);
   t.is(result.left.maxBlock, 2);
   t.is(result.left.right.maxBlock, 1);
-})
+});
+
+test('when maxBlock is equal to size', t => {
+  const tree = buddy.createTree(4);
+  const {tree: tree2} = buddy.allocate(tree, 1);
+  const {tree: tree3} = buddy.allocate(tree2, 1);
+  const {tree: tree4} = buddy.allocate(tree3, 1);
+  t.is(tree4.maxBlock, 1);
+  const {tree: result, address} = buddy.allocate(tree4, 1);
+  t.is(address, 3);
+});

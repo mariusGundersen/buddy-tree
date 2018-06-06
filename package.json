@@ -1,6 +1,6 @@
 {
   "name": "buddy-tree",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Immutable buddy memory allocation",
   "main": "js/main.js",
   "types": "es/main.d.ts",

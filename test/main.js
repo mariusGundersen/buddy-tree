@@ -1,5 +1,5 @@
 import test from 'ava';
-import * as buddy from '../lib/main.js';
+import * as buddy from '../es/main.js';
 
 test('when allocating the full memory', t => {
   const tree = buddy.createTree(16);

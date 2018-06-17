@@ -1,4 +1,4 @@
-import { Allocation, Node } from './types';
+import { Node } from './types';
 
 export default function createNode(size : number, address=0) : Node {
   const level = log2(size);

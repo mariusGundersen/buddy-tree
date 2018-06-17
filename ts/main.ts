@@ -1,4 +1,4 @@
-import { Allocation, Node, OldNode } from './types';
+import { Allocation, Node } from './types';
 import createNode from './createNode';
 import allocate from './allocate';
 import deallocate, { deallocateUnsafe } from './deallocate';

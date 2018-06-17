@@ -3,6 +3,14 @@ import createNode from './createNode';
 import modernize from './modernize';
 
 export default function allocate(tree : Node | OldNode, size=1) : Allocation {
+  if(size <= 0){
+    return {
+      tree: modernize(tree),
+      address: -1,
+      count: 0,
+      size: 0
+    };
+  }
   return unsafeAllocate(modernize(tree), size);
 }
 

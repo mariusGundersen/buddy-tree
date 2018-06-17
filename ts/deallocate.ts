@@ -1,8 +1,11 @@
-import { Allocation, Node } from './types';
+import { Node } from './types';
 import createNode from './createNode';
 import modernize from './modernize';
 
 export default function deallocate(tree : Node, address : number) : Node {
+  if(address < 0){
+    return modernize(tree);
+  }
   return deallocateUnsafe(modernize(tree), address) || createNode(tree.size);
 }
 

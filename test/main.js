@@ -161,7 +161,7 @@ test('when allocating then deallocating half the memory', t => {
 test('when allocating half the memory twice, then deallocating the first half of the memory', t => {
   const tree = buddy.createTree(16);
   const {tree: tree1, address: address1} = buddy.allocate(tree, tree.size/2);
-  const {tree: tree2, address: address2} = buddy.allocate(tree1, tree.size/2);
+  const {tree: tree2} = buddy.allocate(tree1, tree.size/2);
   const result = buddy.deallocateUnsafe(tree2, address1);
   t.not(tree, tree1);
   t.not(tree1, tree2);
@@ -176,7 +176,7 @@ test('when allocating half the memory twice, then deallocating the first half of
 
 test('when allocating half the memory twice, then deallocating the second half of the memory', t => {
   const tree = buddy.createTree(16);
-  const {tree: tree1, address: address1} = buddy.allocate(tree, tree.size/2);
+  const {tree: tree1} = buddy.allocate(tree, tree.size/2);
   const {tree: tree2, address: address2} = buddy.allocate(tree1, tree.size/2);
   const result = buddy.deallocateUnsafe(tree2, address2);
   t.not(tree, tree1);
@@ -288,6 +288,32 @@ test('when maxBlock is equal to size', t => {
   const {tree: tree3} = buddy.allocate(tree2, 1);
   const {tree: tree4} = buddy.allocate(tree3, 1);
   t.is(tree4.maxBlock, 1);
-  const {tree: result, address} = buddy.allocate(tree4, 1);
+  const {address} = buddy.allocate(tree4, 1);
   t.is(address, 3);
 });
+
+test('when allocating 0 memory', t => {
+  const tree = buddy.createTree(4);
+  const result = buddy.allocate(tree, 0);
+  t.is(tree, result.tree);
+  t.is(result.address, -1);
+  t.is(result.count, 0);
+  t.is(result.size, 0);
+});
+
+test('when allocating negative memory', t => {
+  const tree = buddy.createTree(4);
+  const result = buddy.allocate(tree, -10);
+  t.is(tree, result.tree);
+  t.is(result.address, -1);
+  t.is(result.count, 0);
+  t.is(result.size, 0);
+});
+
+test('when deallocating a negative address', t => {
+  let tree = buddy.createTree(4);
+  tree = buddy.allocate(tree, 2).tree;
+  tree = buddy.allocate(tree, 1).tree;
+  const result = buddy.deallocate(tree, -1);
+  t.is(result, tree);
+})

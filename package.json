@@ -6,13 +6,13 @@
   "types": "es/main.d.ts",
   "module": "es/main.js",
   "scripts": {
-    "clean": "rm -rf ./es ./js",
     "test": "ava",
+    "clean": "rimraf ./es ./js",
     "tsc": "tsc",
-    "compile": "npm run tsc && npm run babel",
     "babel": "babel --source-maps -d js es",
-    "watch": "tsc -w & ava -w",
-    "prepublish": "npm run clean && npm run compile && npm test"
+    "compile": "npm run tsc && npm run babel",
+    "watch": "ava -w",
+    "prepublish": "npm run clean && npm run test && npm run compile"
   },
   "repository": {
     "type": "git",
@@ -30,25 +30,33 @@
   },
   "homepage": "https://github.com/mariusGundersen/buddy-tree#readme",
   "devDependencies": {
-    "ava": "^0.24.0",
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-runtime": "^6.26.0",
-    "typescript": "^2.9.1"
-  },
-  "ava": {
-    "files": [
-      "test/*.js"
-    ],
-    "source": [
-      "es/*.js"
-    ],
-    "require": [
-      "babel-register"
-    ]
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/runtime": "^7.5.5",
+    "@types/node": "^12.6.9",
+    "ava": "^2.2.0",
+    "esm": "^3.2.25",
+    "rimraf": "^2.6.3",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.3"
   },
   "peerDependencies": {
-    "babel-runtime": "^6.22.0"
+    "@babel/runtime": "^7.5.5"
+  },
+  "ava": {
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "files": [
+      "./ts/**/*.test.ts"
+    ],
+    "require": [
+      "esm",
+      "ts-node/register"
+    ]
   }
 }

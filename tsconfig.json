@@ -3,17 +3,18 @@
     "outDir": "./es",
     "allowJs": false,
     "strict": true,
-    "noFallthroughCasesInSwitch": true,
     "target": "es2015",
     "module": "es2015",
+    "moduleResolution": "node",
     "sourceMap": true,
     "inlineSourceMap": false,
     "inlineSources": true,
     "declaration": true,
-    "declarationMap": true
+    "declarationMap": true,
+    "skipLibCheck": true
   },
   "include": [
-    "./ts/*.ts"
+    "./ts/**/*.ts"
   ],
-  "compileOnSave": true
+  "compileOnSave": false
 }
